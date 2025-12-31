@@ -1,12 +1,17 @@
-/* index.css */
 :root {
-  background-color: #000336; /* Your deep navy base */
+  background-color: #000336;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevents scrollbars from the background grid */
   width: 100vw;
   height: 100vh;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica;
+}
+
+* {
+  box-sizing: border-box;
 }

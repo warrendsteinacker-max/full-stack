@@ -1,9 +1,10 @@
-import React, { useState, memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import './App.css';
+import { useGlobalContext } from './context/AppContext';
+import Navbar from './components/Navbar';
+import LogFeed from './components/LogFeed';
 
-// MEMOIZED BACKGROUND: This will never re-render even if the App state changes
 const BackgroundGrid = memo(() => {
-  // Pre-calculate boxes once. We use 300 to ensure full screen coverage.
   const boxes = useMemo(() => {
     return Array.from({ length: 300 }).map((_, i) => ({
       id: i,
@@ -16,14 +17,7 @@ const BackgroundGrid = memo(() => {
     <div className="magic-bg-wrapper">
       <div className="grid-flicker-overlay">
         {boxes.map((box) => (
-          <div
-            key={box.id}
-            className="flicker-box"
-            style={{
-              animationDelay: box.delay,
-              animationDuration: box.duration,
-            }}
-          />
+          <div key={box.id} className="flicker-box" style={{ animationDelay: box.delay, animationDuration: box.duration }} />
         ))}
       </div>
     </div>
@@ -31,40 +25,38 @@ const BackgroundGrid = memo(() => {
 });
 
 function App() {
+  const { count, logAndCapture, isCapturing } = useGlobalContext();
 
   return (
     <div className="App">
-      {/* This component is now hyper-optimized */}
+      <Navbar />
       <BackgroundGrid />
 
       <div className="content-wrapper">
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-          
-        </h1>
-        <p style={{ opacity: 0.6, marginBottom: '2rem' }}>Optimized Grid Active</p>
-
         <div className="dashboard-card">
-          <h2>Welcome to my CSS Background Creator</h2>
-          <p style={{ fontSize: '1.5rem', margin: '1rem 0' }}>
-            Actions: <span style={{ color: '#4c4e72', fontWeight: 'bold' }}>{count}</span>
+          <h2>CSS Background Creator</h2>
+          <p style={{ fontSize: '1.2rem', margin: '1rem 0', opacity: 0.8 }}>
+            Training Progress: <span style={{ color: '#4c4e72', fontWeight: 'bold' }}>{count} Tasks</span>
           </p>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button 
-              onClick={() => navigate("/create")}
+              onClick={() => logAndCapture("User initiated background training task")}
+              disabled={isCapturing}
               style={{
                 padding: '12px 24px',
                 borderRadius: '8px',
                 border: 'none',
-                backgroundColor: '#4c4e72',
+                backgroundColor: isCapturing ? '#222' : '#4c4e72',
                 color: 'white',
                 cursor: 'pointer'
               }}
             >
-              Navigate to Create Page
+              {isCapturing ? "Capturing..." : "Log & Capture Task"}
             </button>
- 
-  
           </div>
+
+          <LogFeed />
         </div>
       </div>
     </div>
