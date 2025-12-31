@@ -1,60 +1,60 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-  // Generate a random array of 150 boxes for the scattering effect
-  const boxes = useMemo(() => {
-    return Array.from({ length: 150 }).map((_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      // Randomize delay so they don't move in sync
-      delay: `${Math.random() * -20}s`,
-      duration: `${15 + Math.random() * 10}s`,
-    }));
+  const [columns, setColumns] = useState(0);
+  const [rows, setRows] = useState(0);
+
+  // Calculate grid size based on window dimensions
+  useEffect(() => {
+    const calculateGrid = () => {
+      const cols = Math.ceil(window.innerWidth / 52); // 50px width + 2px gap
+      const rws = Math.ceil(window.innerHeight / 52);
+      setColumns(cols);
+      setRows(rws);
+    };
+
+    calculateGrid();
+    window.addEventListener('resize', calculateGrid);
+    return () => window.removeEventListener('resize', calculateGrid);
   }, []);
+
+  const totalSquares = columns * rows;
 
   return (
     <div className="App">
-      {/* BACKGROUND SCATTER LAYER */}
-      <div className="magic-scatter-container">
-        {boxes.map((box) => (
+      {/* STATIONARY GRID BACKGROUND */}
+      <div className="grid-container">
+        {Array.from({ length: totalSquares }).map((_, i) => (
           <div
-            key={box.id}
-            className="scatter-box"
+            key={i}
+            className="grid-square"
             style={{
-              top: box.top,
-              left: box.left,
-              animationDelay: box.delay,
-              animationDuration: box.duration,
+              // Random delay so they don't pulse at the same time
+              animationDelay: `${Math.random() * -10}s`,
+              // Random duration for organic feeling flickering
+              animationDuration: `${5 + Math.random() * 5}s`
             }}
           />
         ))}
       </div>
 
-      {/* MAIN CONTENT LAYER */}
+      {/* OVERLAY CONTENT */}
       <div className="content-wrapper">
-        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Welcome, Explorer</h1>
-        <p style={{ fontSize: '1.2rem', opacity: 0.8 }}>Training Session Active</p>
+        <h1 style={{ fontSize: '3.5rem', fontWeight: '800' }}>Welcome, Explorer</h1>
+        <p style={{ marginBottom: '2rem', opacity: 0.7 }}>Training Session Active</p>
         
-        {/* Your Dashboard UI components go here */}
-        <div style={{
-          marginTop: '2rem',
-          padding: '2rem',
-          background: 'rgba(255, 255, 255, 0.05)',
-          borderRadius: '20px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
-        }}>
-          <h3>Global State Dashboard</h3>
+        <div className="dashboard-card">
+          <h2 style={{ marginBottom: '1.5rem' }}>Global State Dashboard</h2>
           <button style={{
-            marginTop: '1rem',
-            padding: '10px 20px',
+            padding: '12px 30px',
+            fontSize: '1rem',
             backgroundColor: '#4c4e72',
             color: 'white',
             border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
+            borderRadius: '12px',
+            cursor: 'pointer',
+            transition: 'transform 0.2s'
           }}>
             Log Interaction
           </button>

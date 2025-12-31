@@ -1,57 +1,46 @@
 /* App.css */
 
-/* The background container that holds the particles */
-.magic-scatter-container {
+/* Main container for the stationary grid */
+.grid-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #000336; /* Dark Navy Base */
+  display: grid;
+  /* Creates a grid of 50px squares */
+  grid-template-columns: repeat(auto-fill, 50px);
+  grid-template-rows: repeat(auto-fill, 50px);
+  gap: 2px; /* Small gap to keep them parallel but distinct */
+  background-color: #000336;
   z-index: -1;
-  overflow: hidden;
-  
-  /* Applying your SVG as a mask so particles only show through the grid boxes */
-  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 2000 1400%22 xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill=%22white%22%3E%3Cpath d=%22M0 0h100v100H0zM100 0h100v100H100zM200 0h100v100H200zM300 0h100v100H300zM400 0h100v100H400zM500 0h100v100H500zM600 0h100v100H600zM700 0h100v100H700zM800 0h100v100H800zM900 0h100v100H900zM1000 0h100v100h-100zM1100 0h100v100h-100zM1200 0h100v100h-100zM1300 0h100v100h-100zM1400 0h100v100h-100zM1500 0h100v100h-100zM1600 0h100v100h-100zM1700 0h100v100h-100zM1800 0h100v100h-100zM1900 0h100v100h-100zM0 100h100v100H0zM100 100h100v100H100zM200 100h100v100H200zM300 100h100v100H300zM400 100h100v100H400zM500 100h100v100H500zM600 100h100v100H600z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-  mask-image: url("data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 2000 1400%22 xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill=%22white%22%3E%3Cpath d=%22M0 0h100v100H0zM100 0h100v100H100zM200 0h100v100H200zM300 0h100v100H300zM400 0h100v100H400zM500 0h100v100H500zM600 0h100v100H600zM700 0h100v100H700zM800 0h100v100H800zM900 0h100v100H900zM1000 0h100v100h-100zM1100 0h100v100h-100zM1200 0h100v100h-100zM1300 0h100v100h-100zM1400 0h100v100h-100zM1500 0h100v100h-100zM1600 0h100v100h-100zM1700 0h100v100h-100zM1800 0h100v100h-100zM1900 0h100v100h-100zM0 100h100v100H0zM100 100h100v100H100zM200 100h100v100H200zM300 100h100v100H300zM400 100h100v100H400zM500 100h100v100H500zM600 100h100v100H600z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-  -webkit-mask-size: 1000px 700px;
-  mask-size: 1000px 700px;
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
+  padding: 10px;
 }
 
-/* The individual "Particle" box */
-.scatter-box {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  background-color: #4c4e72; /* Your primary purple/blue */
-  opacity: 0.6;
+/* Individual Grid Square */
+.grid-square {
+  width: 50px;
+  height: 50px;
+  background-color: #4c4e72;
+  opacity: 0; /* Start hidden */
   border-radius: 2px;
-  animation: boxScatter 20s infinite ease-in-out;
+  /* Pulse animation: fades between dark and light shades */
+  animation: pulseFade 8s infinite ease-in-out;
 }
 
-/* Independent Scatter Animation */
-@keyframes boxScatter {
-  0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 0.2;
+/* Fading Animation */
+@keyframes pulseFade {
+  0%, 100% {
+    opacity: 0.05; /* Darkest shade */
+    background-color: #1a1c3a;
   }
-  33% {
-    transform: translate(80px, -40px) rotate(15deg) scale(1.1);
-    opacity: 0.7;
-  }
-  66% {
-    transform: translate(-40px, 80px) rotate(-15deg) scale(0.9);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 0.2;
+  50% {
+    opacity: 0.4; /* Lightest shade */
+    background-color: #4c4e72;
   }
 }
 
-/* Foreground Content */
+/* Layout for your actual UI */
 .content-wrapper {
   position: relative;
   z-index: 10;
@@ -61,5 +50,16 @@
   justify-content: center;
   min-height: 100vh;
   color: white;
+  pointer-events: none; /* Allows clicking through to buttons if needed */
+}
+
+.dashboard-card {
+  pointer-events: auto; /* Re-enable clicks for the UI */
+  background: rgba(15, 18, 55, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(76, 78, 114, 0.3);
   text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }

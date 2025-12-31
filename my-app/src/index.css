@@ -1,112 +1,12 @@
-/* 1. Reset and Layout Fixes */
-#root {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+/* index.css */
+:root {
+  background-color: #000336; /* Your deep navy base */
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #0b0e24; /* Deep dark base */
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* 2. The Animated Scatter Background */
-.magicpattern {
+  overflow: hidden; /* Prevents scrollbars from the background grid */
   width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 80px;
-  color: white;
-  font-family: 'Inter', sans-serif;
-
-  /* BACKGROUND SETUP */
-  /* Ensure your SVG URL is pasted inside the url("") below */
-  background-image: url("YOUR_SVG_CODE_HERE");
-  background-repeat: repeat; /* Changed to repeat for the scatter effect */
-  
-  /* Increased size to 400% creates a "zoomed" scatter movement */
-  background-size: 400% 400%; 
-  
-  /* THE ANIMATION */
-  animation: scatterMovement 40s linear infinite;
-}
-
-/* 3. The Scatter Keyframes */
-@keyframes scatterMovement {
-  0% {
-    background-position: 0% 0%;
-  }
-  25% {
-    background-position: 50% 100%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  75% {
-    background-position: 50% 0%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
-}
-
-/* 4. Dashboard UI Components */
-.card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  padding: 2.5rem;
-  width: 90%;
-  max-width: 420px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  margin-top: 30px;
-}
-
-.counter-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.count-badge {
-  background: #4f46e5;
-  padding: 6px 16px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 1.2rem;
-  box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin: 10px 0;
-  border-radius: 12px;
-  border: none;
-  background: #4f46e5;
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background: #6366f1;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-button.secondary {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  height: 100vh;
 }
