@@ -31,7 +31,6 @@ const BackgroundGrid = memo(() => {
 });
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <div className="App">
@@ -40,18 +39,18 @@ function App() {
 
       <div className="content-wrapper">
         <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-          Welcome, Explorer
+          
         </h1>
         <p style={{ opacity: 0.6, marginBottom: '2rem' }}>Optimized Grid Active</p>
 
         <div className="dashboard-card">
-          <h2>Global State Dashboard</h2>
+          <h2>Welcome to my CSS Background Creator</h2>
           <p style={{ fontSize: '1.5rem', margin: '1rem 0' }}>
             Actions: <span style={{ color: '#4c4e72', fontWeight: 'bold' }}>{count}</span>
           </p>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button 
-              onClick={() => setCount(prev => prev + 1)}
+              onClick={() => navigate("/create")}
               style={{
                 padding: '12px 24px',
                 borderRadius: '8px',
@@ -61,21 +60,10 @@ function App() {
                 cursor: 'pointer'
               }}
             >
-              Log Interaction
+              Navigate to Create Page
             </button>
-            <button 
-              onClick={() => setCount(0)}
-              style={{
-                padding: '12px 24px',
-                borderRadius: '8px',
-                border: '1px solid #4c4e72',
-                backgroundColor: 'transparent',
-                color: 'white',
-                cursor: 'pointer'
-              }}
-            >
-              Reset
-            </button>
+ 
+  
           </div>
         </div>
       </div>
