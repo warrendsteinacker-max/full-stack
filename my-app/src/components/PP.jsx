@@ -40,6 +40,7 @@ function PP() {
         <button style={{position: 'absolute', top: '60%', left: '5%'}} onClick={(e) => dispatch({type: 'dec'})}>
             inc
         </button>
+        <p style={{position: 'absolute', top: '60%'}}>{state.count}</p>
         </>
     );
 }
