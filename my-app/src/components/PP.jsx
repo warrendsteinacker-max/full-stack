@@ -14,7 +14,10 @@ function PP() {
 
         function reducer(state, action)  {
             switch(action.type){
-                case: IN;
+                case 'col':
+                    return {...state, color: action.payload}
+                default: 
+                    return state;
             }
         }
     
@@ -22,8 +25,8 @@ function PP() {
 
 
     return (
-        <div>
-            <h1>PP Page</h1>
+        <div style={{color: state.color, justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
         </div>
+        <input type="text" onChange={(e) => dispatch({type: 'col', payload: e.target.value})} />
     );
 }
