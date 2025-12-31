@@ -1,48 +1,78 @@
+import React, { useReducer, useEffect } from 'react';
 
-import { useReducer } from "react";
+const rippleReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_RIPPLE':
+      return [...state, action.payload].slice(-20);
+    case 'REMOVE_RIPPLE':
+      return state.filter((r) => r.id !== action.payload);
+    default:
+      return state;
+  }
+};
 
+export default function PP() {
+  const [ripples, dispatch] = useReducer(rippleReducer, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const id = Date.now();
+      const newRipple = { id, x: e.clientX, y: e.clientY };
 
-function PP() {
+      dispatch({ type: 'ADD_RIPPLE', payload: newRipple });
 
-    const s = {
-        count: 0,
-        color: 'red',
+      setTimeout(() => {
+        dispatch({ type: 'REMOVE_RIPPLE', payload: id });
+      }, 1000);
     };
-    
-    const [state, dispatch] = useReducer(reducer, s)
 
-        function reducer(state, action)  {
-            switch(action.type){
-                case 'col':
-                    return {...state, color: action.payload}
-                case 'inc':
-                    return {...state, count: state.count + 1}
-                case 'dec':
-                    return {...state, count: state.count - 1}
-                default: 
-                    return state;
-            }
-        }
-    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
+  return (
+    <>
+      {/* 1. INLINE CSS VIA STYLE TAG */}
+      <style>
+        {`
+          @keyframes ripple-effect {
+            0% { width: 0px; height: 0px; opacity: 0.5; }
+            100% { width: 100px; height: 100px; opacity: 0; }
+          }
+          .ripple-style {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: ripple-effect 1s ease-out forwards;
+          }
+        `}
+      </style>
 
-
-    return (
-        <>
-        <div style={{color: state.color, justifyContent: 'center', alignItems: 'left', height: '100vh'}}>
-            <h1>PP Page</h1>
-        </div>
-        <input type="text" style={{justifyContent: 'center', alignItems: 'center', height: '100px', position: 'absolute', top: '40%'}} onChange={(e) => {dispatch({type: 'col', payload: e.target.value})}} />
-        <button style={{position: 'absolute', top: '60%', right: '5%'}} onClick={(e) => dispatch({type: 'inc'})}>
-            dec
-        </button>
-        <button style={{position: 'absolute', top: '60%', left: '5%'}} onClick={(e) => dispatch({type: 'dec'})}>
-            inc
-        </button>
-        <p style={{position: 'absolute', top: '60%'}}>{state.count}</p>
-        </>
-    );
+      {/* 2. CONTAINER WITH INLINE STYLE */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: 9999,
+        overflow: 'hidden'
+      }}>
+        {ripples.map((ripple) => (
+          <div
+            key={ripple.id}
+            className="ripple-style"
+            style={{ 
+              left: ripple.x, 
+              top: ripple.y 
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
 }
 
-export default PP;
