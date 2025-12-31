@@ -29,7 +29,9 @@ function PP() {
         <div style={{color: state.color, justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
             <h1>PP Page</h1>
         </div>
-        <input type="text" onChange={(e) => {dispatch({type: 'col', payload: e.target.value})}} />
+        <input type="text" style={{justifyContent: 'center', alignItems: 'center', height: '100px', position: 'absolute', top: '40%'}} onChange={(e) => {dispatch({type: 'col', payload: e.target.value})}} />
+        <>
+        </>
         </>
     );
 }
