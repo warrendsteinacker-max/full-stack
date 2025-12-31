@@ -8,6 +8,7 @@ import BackgroundGrid from './components/BackgroundGrid';
 import CodeComparator from './components/CodeComparator';
 import { StyleGallery } from './components/StyleGallery';
 import { ShareTool } from './components/ShareTool';
+import PP from './components/PP';
 
 
 function Dashboard() {
@@ -51,6 +52,7 @@ function Dashboard() {
       <StyleGallery />
       <ShareTool />
       <CodeComparator />
+      <Link to="/p">Go to PP Page</Link>
 
       <button onClick={saveToGallery} style={{ marginTop: '20px', width: '100%', padding: '10px' }}>
         Save Current to Gallery

@@ -1,4 +1,4 @@
-import { color } from "html2canvas/dist/types/css/types/color";
+
 import { useReducer } from "react";
 
 
@@ -25,8 +25,13 @@ function PP() {
 
 
     return (
+        <>
         <div style={{color: state.color, justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+            <h1>PP Page</h1>
         </div>
-        <input type="text" onChange={(e) => dispatch({type: 'col', payload: e.target.value})} />
+        <input type="text" onChange={(e) => {dispatch({type: 'col', payload: e.target.value})}} />
+        </>
     );
 }
+
+export default PP;
