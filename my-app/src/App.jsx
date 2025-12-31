@@ -5,11 +5,14 @@ import BackgroundGrid from './components/BackgroundGrid';
 import CodeComparator from './components/CodeComparator';
 import { StyleGallery } from './components/StyleGallery';
 import { ShareTool } from './components/ShareTool';
+import {Link, Route, Routes} from 'react-router-dom';
 
 function App() {
   const { config, setConfig, saveToGallery } = useGlobalContext();
 
   return (
+
+
     <div className="App">
       <BackgroundGrid settings={config} />
       
