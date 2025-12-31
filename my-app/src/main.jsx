@@ -1,7 +1,12 @@
-import { AppProvider } from './context/AppContext';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import { AppProvider } from './context/AppContext' // Import the provider
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <AppProvider>
-    <App />
-  </AppProvider>
+  <React.StrictMode>
+    <AppProvider> {/* Wrap App here */}
+      <App />
+    </AppProvider>
+  </React.StrictMode>,
 )
