@@ -1,62 +1,48 @@
-import React, { memo, useMemo } from 'react';
+import React from 'react';
 import './App.css';
 import { useGlobalContext } from './context/AppContext';
-import Navbar from './components/Navbar';
-import LogFeed from './components/LogFeed';
-
-const BackgroundGrid = memo(() => {
-  const boxes = useMemo(() => {
-    return Array.from({ length: 300 }).map((_, i) => ({
-      id: i,
-      delay: `${Math.random() * -10}s`,
-      duration: `${6 + Math.random() * 4}s`,
-    }));
-  }, []);
-
-  return (
-    <div className="magic-bg-wrapper">
-      <div className="grid-flicker-overlay">
-        {boxes.map((box) => (
-          <div key={box.id} className="flicker-box" style={{ animationDelay: box.delay, animationDuration: box.duration }} />
-        ))}
-      </div>
-    </div>
-  );
-});
+import BackgroundGrid from './components/BackgroundGrid';
+import CodeComparator from './components/CodeComparator';
+import { StyleGallery } from './components/StyleGallery';
+import { ShareTool } from './components/ShareTool';
 
 function App() {
-  const { count, logAndCapture, isCapturing } = useGlobalContext();
+  const { config, setConfig, saveToGallery } = useGlobalContext();
 
   return (
     <div className="App">
-      <Navbar />
-      <BackgroundGrid />
-
+      <BackgroundGrid settings={config} />
+      
       <div className="content-wrapper">
         <div className="dashboard-card">
-          <h2>CSS Background Creator</h2>
-          <p style={{ fontSize: '1.2rem', margin: '1rem 0', opacity: 0.8 }}>
-            Training Progress: <span style={{ color: '#4c4e72', fontWeight: 'bold' }}>{count} Tasks</span>
-          </p>
+          <h1>Background Studio</h1>
           
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <button 
-              onClick={() => logAndCapture("User initiated background training task")}
-              disabled={isCapturing}
-              style={{
-                padding: '12px 24px',
-                borderRadius: '8px',
-                border: 'none',
-                backgroundColor: isCapturing ? '#222' : '#4c4e72',
-                color: 'white',
-                cursor: 'pointer'
-              }}
-            >
-              {isCapturing ? "Capturing..." : "Log & Capture Task"}
-            </button>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div>
+              <label>Theme Name</label>
+              <input type="text" value={config.themeName} onChange={(e) => setConfig({...config, themeName: e.target.value})} style={{width: '100%'}} />
+            </div>
+            <div>
+              <label>Complexity Mode</label>
+              <select value={config.complexity} onChange={(e) => setConfig({...config, complexity: e.target.value})} style={{width: '100%'}}>
+                <option value="pulse">Pulse</option>
+                <option value="scatter">Scatter</option>
+              </select>
+            </div>
           </div>
 
-          <LogFeed />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+            <label>Primary Color <input type="color" value={config.primaryColor} onChange={(e) => setConfig({...config, primaryColor: e.target.value})} /></label>
+            <label>BG Color <input type="color" value={config.secondaryColor} onChange={(e) => setConfig({...config, secondaryColor: e.target.value})} /></label>
+          </div>
+
+          <StyleGallery />
+          <ShareTool />
+          <CodeComparator />
+
+          <button onClick={saveToGallery} style={{ marginTop: '20px', width: '100%', padding: '10px' }}>
+            Save Current to Gallery
+          </button>
         </div>
       </div>
     </div>

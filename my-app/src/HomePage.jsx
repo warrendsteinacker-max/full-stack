@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGlobalContext } from './AppContext';
+import { useGlobalContext } from './context/AppContext';
 import './HomePage.css';
 
 const HomePage = () => {
