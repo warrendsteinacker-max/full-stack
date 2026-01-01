@@ -1,65 +1,77 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Sphere, Plane, SoftShadows, Sky } from '@react-three/drei'
+import { Sphere, Plane, Sky } from '@react-three/drei'
 import * as THREE from 'three'
 
 function Scene() {
   const meshRef = useRef();
   const ballRef = useRef();
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  
+  // Using a Ref for keys to prevent React re-renders 60 times a second
+  const keys = useRef({ ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false });
 
-  // useFrame runs 60 times per second (The Animation Loop)
+  useEffect(() => {
+    const handleDown = (e) => { if(keys.current.hasOwnProperty(e.key)) keys.current[e.key] = true };
+    const handleUp = (e) => { if(keys.current.hasOwnProperty(e.key)) keys.current[e.key] = false };
+    window.addEventListener('keydown', handleDown);
+    window.addEventListener('keyup', handleUp);
+    return () => { window.removeEventListener('keydown', handleDown); window.removeEventListener('keyup', handleUp); };
+  }, []);
+
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     
-    // 1. Move the Ball based on mouse
-    if (ballRef.current) {
-      ballRef.current.position.x = mousePos.x * 10;
-      ballRef.current.position.z = mousePos.y * 10;
-      // Make ball hover slightly
-      ballRef.current.position.y = Math.sin(t * 2) * 0.2 + 0.5;
-    }
+    // 1. Movement Logic (Same as before)
+    const speed = 0.1;
+    if (keys.current.ArrowUp) ballRef.current.position.z -= speed;
+    if (keys.current.ArrowDown) ballRef.current.position.z += speed;
+    if (keys.current.ArrowLeft) ballRef.current.position.x -= speed;
+    if (keys.current.ArrowRight) ballRef.current.position.x += speed;
+    ballRef.current.position.y = Math.sin(t * 2) * 0.2 + 0.5;
 
-    // 2. Animate the Waves (Vertex Displacement)
+    // 2. Vertical & Horizontal Wave Logic
     const { geometry } = meshRef.current;
-    const position = geometry.attributes.position;
-    
-    for (let i = 0; i < position.count; i++) {
-      const x = position.getX(i);
-      const z = position.getZ(i);
-      
-      // Distance from ball to current vertex
-      const dist = Math.sqrt(
-        Math.pow(x - ballRef.current.position.x, 2) + 
-        Math.pow(z - ballRef.current.position.z, 2)
-      );
+    const pos = geometry.attributes.position;
 
-      // Create a ripple effect centered on the ball
-      const wave = Math.sin(dist * 1.5 - t * 5) * 0.2 * Math.exp(-dist * 0.3);
-      position.setY(i, wave);
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const z = pos.getZ(i);
+
+      // Radial distance from ball
+      const dist = Math.sqrt(Math.pow(x - ballRef.current.position.x, 2) + Math.pow(z - ballRef.current.position.z, 2));
+
+      // Horizontal waves (moving along X)
+      const waveX = Math.sin(x * 1.0 + t * 2.0) * 0.1;
+      
+      // Vertical waves (moving along Z)
+      const waveZ = Math.sin(z * 1.0 + t * 2.0) * 0.1;
+
+      // Ball Ripple (Interaction)
+      const ripple = Math.sin(dist * 1.5 - t * 5) * 0.4 * Math.exp(-dist * 0.3);
+
+      // Combine all three for the final vertical height (Y)
+      pos.setY(i, waveX + waveZ + ripple);
     }
-    position.needsUpdate = true;
+    pos.needsUpdate = true;
   });
 
   return (
     <>
       <Sky sunPosition={[100, 20, 100]} />
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} castShadow />
+      <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
 
-      {/* The Ball */}
-      <Sphere ref={ballRef} args={[0.5, 32, 32]} castShadow>
-        <meshStandardMaterial color="orange" roughness={0} metalness={0.8} />
+      <Sphere ref={ballRef} args={[0.5, 32, 32]}>
+        <meshStandardMaterial color="orange" emissive="orange" emissiveIntensity={0.5} />
       </Sphere>
 
-      {/* The Landscape (Water Plane) */}
-      <Plane 
-        ref={meshRef} 
-        args={[20, 20, 64, 64]} 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        receiveShadow
-      >
-        <meshStandardMaterial color="#0077be" wireframe={false} flatShading />
+      <Plane ref={meshRef} args={[25, 25, 50, 50]} rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Wireframe: true creates the "Line Pattern" look */}
+        <meshStandardMaterial 
+          color="#00ffff" 
+          wireframe={true} 
+          transparent 
+          opacity={0.6} 
+        />
       </Plane>
     </>
   )
@@ -67,14 +79,8 @@ function Scene() {
 
 export default function PP() {
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#111' }}
-         onMouseMove={(e) => {
-           // Normalize mouse coordinates to -1 to +1
-           const x = (e.clientX / window.innerWidth) * 2 - 1;
-           const y = -(e.clientY / window.innerHeight) * 2 + 1;
-           // We would pass this to the scene via a ref or state
-         }}>
-      <Canvas shadows camera={{ position: [0, 10, 15], fov: 45 }}>
+    <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+      <Canvas shadows camera={{ position: [0, 8, 12], fov: 50 }}>
         <Scene />
       </Canvas>
     </div>
