@@ -8,7 +8,7 @@ import BackgroundGrid from './components/BackgroundGrid';
 import CodeComparator from './components/CodeComparator';
 import { StyleGallery } from './components/StyleGallery';
 import { ShareTool } from './components/ShareTool';
-import PP from './components/PP';
+import CustomHouse from './components/PP';
 
 
 function Dashboard() {
@@ -74,7 +74,7 @@ function App() {
           <Routes>
             {/* The Main Studio */}
             <Route path="/" element={<Dashboard />} />
-            <Route path="/p" element={<PP/>} />
+            <Route path="/p" element={<CustomHouse/>} />
             {/* The Detail Page for specific styles */}
 
           </Routes>
