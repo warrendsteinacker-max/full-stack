@@ -1,72 +1,65 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Sky, Stars, MeshWobbleMaterial } from '@react-three/drei'
-import * as THREE from 'three'
+import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
+import { OrbitControls, Sky, Environment, Stars } from '@react-three/drei'
 
-// 1. Custom Class for Locations (Bus Depot, Diner, etc.)
-function Location({ position, name, color = "#444" }) {
+// A Physical Building
+function Building({ position, size = [2, 4, 2], color = "#222" }) {
   return (
-    <group position={position}>
-      {/* Ruins/Buildings */}
-      <mesh position={[0, 1, 0]} castShadow>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color={color} />
+    <RigidBody type="fixed" position={position}>
+      <mesh castShadow>
+        <boxGeometry args={size} />
+        <meshStandardMaterial color={color} roughness={0.8} />
       </mesh>
-      <mesh position={[0.5, 0.5, 1]} castShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-    </group>
+    </RigidBody>
   )
 }
 
-// 2. Custom Class for the Lava Cracks
-function LavaRoad() {
+function GameScene() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
-      <torusGeometry args={[12, 0.5, 16, 100]} />
-      <MeshWobbleMaterial 
-        color="#ff4400" 
-        emissive="#ff2200" 
-        emissiveIntensity={2} 
-        factor={0.2} 
-        speed={1} 
-      />
-    </mesh>
+    <Suspense fallback={null}>
+      {/* 1. Low-level Rust Physics Wrapper */}
+      <Physics gravity={[0, -9.81, 0]}>
+        
+        {/* The Player (or Ball) with Physics */}
+        <RigidBody colliders="ball" restitution={0.5} position={[0, 5, 0]}>
+          <mesh castShadow>
+            <sphereGeometry args={[0.5, 32, 32]} />
+            <meshStandardMaterial color="orange" emissive="orange" />
+          </mesh>
+        </RigidBody>
+
+        {/* Static Environment: Bus Depot Ruins */}
+        <Building position={[10, 2, 0]} size={[4, 5, 4]} color="#1a1a1a" />
+        <Building position={[-10, 1, 5]} size={[3, 2, 6]} color="#1a1a1a" />
+
+        {/* The Ground (Static Physical Plane) */}
+        <RigidBody type="fixed">
+          <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <planeGeometry args={[100, 100]} />
+            <meshStandardMaterial color="#050505" />
+          </mesh>
+          {/* Invisible collider to make sure things don't fall through */}
+          <CuboidCollider args={[50, 0.1, 50]} position={[0, -0.1, 0]} />
+        </RigidBody>
+
+      </Physics>
+
+      {/* Lighting & Atmosphere */}
+      <Stars depth={50} count={5000} factor={4} saturation={0} fade />
+      <Sky sunPosition={[0, -1, 0]} />
+      <ambientLight intensity={0.1} />
+      <pointLight position={[0, 10, 0]} intensity={2} color="#ff4400" castShadow />
+      <Environment preset="night" />
+    </Suspense>
   )
 }
 
-export default function TranzitMap() {
+export default function PP() {
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#050505' }}>
-      <Canvas shadows camera={{ position: [20, 20, 20], fov: 45 }}>
-        <color attach="background" args={['#050505']} />
-        
-        {/* Environment */}
-        <fog attach="fog" args={['#111', 10, 50]} />
-        <Sky sunPosition={[0, -1, 0]} inclination={0} azimuth={0.25} /> {/* Dark Sky */}
-        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-        
-        {/* Lights */}
-        <ambientLight intensity={0.2} />
-        <pointLight position={[0, 5, 0]} color="#ff6600" intensity={2} />
-
-        {/* The "Route B" Road Loop */}
-        <LavaRoad />
-
-        {/* Key Locations positioned around the loop */}
-        <Location position={[12, 0, 0]} name="Bus Depot" color="#222" />
-        <Location position={[8, 0, 8]} name="Diner" color="#333" />
-        <Location position={[0, 0, 12]} name="Farm" color="#222" />
-        <Location position={[-10, 0, 5]} name="Power Station" color="#111" />
-        <Location position={[-5, 0, -10]} name="Town" color="#333" />
-
-        {/* The Ground (Ash/Burnt Earth) */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <planeGeometry args={[100, 100]} />
-          <meshStandardMaterial color="#111" roughness={1} />
-        </mesh>
-
+    <div style={{ width: '100vw', height: '100vh', background: 'black' }}>
+      <Canvas shadows camera={{ position: [15, 15, 15], fov: 45 }}>
+        <GameScene />
         <OrbitControls />
       </Canvas>
     </div>
