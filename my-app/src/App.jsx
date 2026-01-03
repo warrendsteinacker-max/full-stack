@@ -74,6 +74,7 @@ function App() {
           <Routes>
             {/* The Main Studio */}
             <Route path="/" element={<Dashboard />} />
+            <Route
             <Route path="/p" element={<PP/>} />
             {/* The Detail Page for specific styles */}
 
